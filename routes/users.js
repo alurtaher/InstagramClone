@@ -1,9 +1,23 @@
-var express = require('express');
-var router = express.Router();
+//From this file we can perform CURD operations from any file in the Database
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
+const mongoose = require('mongoose')
+const plm = require('passport-local-mongoose')
+
+//Connecting to the mongodb Database
+mongoose.connect("mongodb://127.0.0.1:27017/instaClone")
+
+//Tell how our document look alike
+const userSchema = mongoose.Schema({
+  userName:String,
+  name:String,
+  email:String,
+  password:String,
+  profileImage:String,
+  posts:[{type:mongoose.Schema.Types.ObjectId ,ref:"post"}]
 });
 
-module.exports = router;
+//From this line we are providing the serialize and the deserialize user
+userSchema.plugin(plm)
+
+//Exporting the collection/model 
+module.exports = mongoose.model("user",userSchema)
